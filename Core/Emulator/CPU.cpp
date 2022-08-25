@@ -1,5 +1,4 @@
 #include "CPU.hpp"
-#include <format>
 #include "Reader.hpp"
 
 namespace Core::Emulator

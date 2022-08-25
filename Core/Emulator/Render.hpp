@@ -30,7 +30,19 @@ namespace Core::Renderer
         ImGui::SetNextWindowPos({640, 0});
         if(ImGui::Begin("Processor Information", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse))
         {
+            if(ImGui::BeginTabBar("#ProcessorInfoTabs"))
+            {
+                ImGui::BeginTabItem("Registers");
+                std::array<std::uint8_t, 16> Registers = CPU.GetRegisters();
+                for(int i = 0; i < Registers.size(); i++)
+                {
+                    ImGui::Text("V%X - %X", i, Registers[i]);
+                }
+                ImGui::Text("Current Instruction - %X", CPU.GetCurrentOpCode());
+                ImGui::EndTabItem();
 
+                ImGui::EndTabBar();
+            }
             ImGui::End();
         }
 

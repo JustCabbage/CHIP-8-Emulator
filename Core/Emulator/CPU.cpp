@@ -28,16 +28,26 @@ namespace Core::Emulator
         std::cout << "Loaded " << this->m_Size << " Bytes from \"" << ROMPath << "\"\n"; 
     }
 
+    std::uint16_t CPU::GetCurrentOpCode()
+    {
+        return this->m_CurrentOpCode;
+    }
+    
+    std::array<std::uint8_t, 16> CPU::GetRegisters()
+    {
+        return this->m_Registers;
+    }
+
     void CPU::Cycle()
     {
-        std::uint16_t OpCode = (this->m_Memory[this->m_ProgramCounter] << 8) + this->m_Memory[this->m_ProgramCounter + 1];
-        std::uint16_t Instruction = OpCode & 0xF000;
+        this->m_CurrentOpCode = (this->m_Memory[this->m_ProgramCounter] << 8) + this->m_Memory[this->m_ProgramCounter + 1];
+        std::uint16_t Instruction = this->m_CurrentOpCode & 0xF000;
 
         switch(Instruction) 
         {
             case 0x0000:
             {
-                std::uint16_t Postfix = OpCode & 0x00FF;
+                std::uint16_t Postfix = this->m_CurrentOpCode & 0x00FF;
                 switch(Postfix)
                 {
                     case 0x00E0:
@@ -53,38 +63,38 @@ namespace Core::Emulator
             }
             case 0x1000:
             {
-                std::uint16_t JumpLocation = OpCode & 0x0FFF;
+                std::uint16_t JumpLocation = this->m_CurrentOpCode & 0x0FFF;
                 this->m_ProgramCounter = JumpLocation;
                 break;
             }
             case 0x6000:
             {
-                std::uint16_t RegisterIndex = (OpCode & 0x0F00) >> 8;
-                std::uint8_t Value = OpCode & 0x00FF;
+                std::uint16_t RegisterIndex = (this->m_CurrentOpCode & 0x0F00) >> 8;
+                std::uint8_t Value = this->m_CurrentOpCode & 0x00FF;
                 this->m_Registers[RegisterIndex] = Value;
                 this->m_ProgramCounter += 2;
                 break;
             }
             case 0x7000:
             {
-                std::uint16_t RegisterIndex = (OpCode & 0x0F00) >> 8;
-                std::uint8_t Value = OpCode & 0x00FF;
+                std::uint16_t RegisterIndex = (this->m_CurrentOpCode & 0x0F00) >> 8;
+                std::uint8_t Value = this->m_CurrentOpCode & 0x00FF;
                 this->m_Registers[RegisterIndex] += Value;
                 this->m_ProgramCounter += 2;
                 break;
             }
             case 0xA000:
             {
-                std::uint16_t Value = OpCode & 0x0FFF;
+                std::uint16_t Value = this->m_CurrentOpCode & 0x0FFF;
                 this->m_I = Value;
                 this->m_ProgramCounter += 2;    
                 break;
             }
             case 0xD000:
             {
-                std::uint16_t X = this->m_Registers[(OpCode & 0x0F00) >> 8];
-                std::uint16_t Y = this->m_Registers[(OpCode & 0x00F0) >> 4];
-                std::uint16_t PixelHeight = OpCode & 0x000F;
+                std::uint16_t X = this->m_Registers[(this->m_CurrentOpCode & 0x0F00) >> 8];
+                std::uint16_t Y = this->m_Registers[(this->m_CurrentOpCode & 0x00F0) >> 4];
+                std::uint16_t PixelHeight = this->m_CurrentOpCode & 0x000F;
                 this->m_Registers[0xF] = 0x0;
                 for(int i = 0; i < PixelHeight; i++)
                 {
@@ -102,7 +112,7 @@ namespace Core::Emulator
             }
             default:
             {
-                std::cout << std::showbase << std::hex << "Unknown OpCode - " << Instruction << "\n";
+                std::cout << std::showbase << std::hex << "Unknown Instruction - " << Instruction << " | Full OpCode - " << this->m_CurrentOpCode << "\n";
                 break;
             }
         }

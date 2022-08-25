@@ -7,9 +7,11 @@ namespace Core
     {
         Emulator::CPU CPU(ROMPath);
         sf::RenderWindow EmulatorWindow(sf::VideoMode({1280, 720}), "CHIP-8 Emulator | github.com/JustCabbage", sf::Style::Close);
+        EmulatorWindow.setFramerateLimit(60);
         ImGui::SFML::Init(EmulatorWindow);
-        sf::Clock Clock;
+        ImGui::GetIO().IniFilename = NULL;
 
+        sf::Clock Clock;
         while(EmulatorWindow.isOpen())
         {
             sf::Event event;

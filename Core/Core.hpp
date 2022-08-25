@@ -6,7 +6,7 @@ namespace Core
     void Initialize(const std::string& ROMPath)
     {
         Emulator::CPU CPU(ROMPath);
-        sf::RenderWindow EmulatorWindow(sf::VideoMode({1280, 720}), "CHIP-8 Emulator | github.com/JustCabbage", sf::Style::Close);
+        sf::RenderWindow EmulatorWindow(sf::VideoMode({1280, 640}), "CHIP-8 Emulator | github.com/JustCabbage", sf::Style::Close);
         EmulatorWindow.setFramerateLimit(60);
         ImGui::SFML::Init(EmulatorWindow);
         ImGui::GetIO().IniFilename = NULL;

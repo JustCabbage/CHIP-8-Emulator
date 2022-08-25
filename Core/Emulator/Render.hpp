@@ -26,7 +26,7 @@ namespace Core::Renderer
 
     void RenderUI(Emulator::CPU& CPU)
     {
-        ImGui::SetNextWindowSize({1280 - 640, 720});
+        ImGui::SetNextWindowSize({1280 - 640, 640});
         ImGui::SetNextWindowPos({640, 0});
 
         ImGui::Begin("Processor Information", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
@@ -48,7 +48,7 @@ namespace Core::Renderer
         }
         ImGui::End();
 
-        ImGui::SetNextWindowSize({640, 720 - 320});
+        ImGui::SetNextWindowSize({640, 640 - 320});
         ImGui::SetNextWindowPos({0, 320});
         
         ImGui::Begin("Configuration", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);

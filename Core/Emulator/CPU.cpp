@@ -29,15 +29,16 @@ namespace Core::Emulator
     {
         this->Registers.fill(0);
         this->Stack.fill(0);
-        std::array<std::uint8_t, 32> EmptyRow;
-        EmptyRow.fill(0);
-        this->VideoBuffer.fill(EmptyRow);
+        this->VideoBuffer.fill({});
         this->ProgramCounter = 0x200;
     }
 
     void CPU::HandleKeyEvent(sf::Event& Event)
     {
-        this->Keypad[Config::Bindings[Event.key.code]] = (Event.type == sf::Event::KeyPressed);
+        if(Config::Bindings.find(Event.key.code) != Config::Bindings.end())
+        {
+            this->Keypad[Config::Bindings[Event.key.code]] = (Event.type == sf::Event::KeyPressed);
+        }
     }
 
     void CPU::CycleTimers()
@@ -45,6 +46,15 @@ namespace Core::Emulator
         if(this->DelayTimer > 0)
         {
             this->DelayTimer--;
+        }
+
+        if(this->SoundTimer > 0)
+        {
+            this->SoundTimer--;
+        }
+        else
+        {
+            // Stop Sound;
         }
     }
 
@@ -92,7 +102,7 @@ namespace Core::Emulator
             }
             case 0x5000:
             {
-                if(this->Registers[CurrentInstruction.x] == CurrentInstruction.kk)
+                if(this->Registers[CurrentInstruction.x] == this->Registers[CurrentInstruction.y])
                 {
                     this->ProgramCounter += 2;
                 }  
@@ -146,10 +156,9 @@ namespace Core::Emulator
             {
                 std::uint16_t X = this->Registers[CurrentInstruction.x];
                 std::uint16_t Y = this->Registers[CurrentInstruction.y];
-                std::uint16_t PixelHeight = CurrentInstruction.n;
-
+                
                 this->Registers[0xF] = 0x0;
-                for(std::uint16_t i = 0; i < PixelHeight; i++)
+                for(std::uint16_t i = 0; i < CurrentInstruction.n; i++)
                 {
                     std::uint8_t Byte = this->Memory[this->I + i];
                     for(std::uint8_t j = 0; j < 8; j++)

@@ -20,6 +20,7 @@ namespace Core::Emulator
         std::array<std::uint8_t, 16> Registers = {};
         std::uint16_t I = 0;
         std::uint8_t DelayTimer = 0;
+        std::uint8_t SoundTimer = 0;
         std::uint16_t ProgramCounter = 0;
         std::uint8_t StackPointer = 0;
         std::array<std::uint16_t, 16> Stack = {};

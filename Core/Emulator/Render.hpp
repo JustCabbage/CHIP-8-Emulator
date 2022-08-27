@@ -1,12 +1,12 @@
 #pragma once
-#include <SFML/Graphics.hpp>
 #include <imgui-SFML.h>
 #include <imgui.h>
+#include "Configuration.hpp"
 #include "CPU.hpp"
 
 namespace Core::Renderer
 {
-    void RenderVideoBuffer(sf::RenderTarget& Target, Emulator::CPU& CPU)
+    inline void RenderVideoBuffer(sf::RenderTarget& Target, Emulator::CPU& CPU)
     {
         for(int i = 0; i < CPU.VideoBuffer.size(); i++)
         {
@@ -24,7 +24,7 @@ namespace Core::Renderer
         }
     }
 
-    void RenderUI(Emulator::CPU& CPU)
+    inline void RenderUI(Emulator::CPU& CPU)
     {
         ImGui::SetNextWindowSize({1280 - 640, 640});
         ImGui::SetNextWindowPos({640, 0});
@@ -35,12 +35,12 @@ namespace Core::Renderer
             {
                 ImGui::BeginTabItem("Registers");
                 {
-                    std::array<std::uint8_t, 16> Registers = CPU.GetRegisters();
-                    for(int i = 0; i < Registers.size(); i++)
+                    for(int i = 0; i < CPU.Registers.size(); i++)
                     {
-                        ImGui::Text("V%X - %X", i, Registers[i]);
+                        ImGui::Text("V%X - %X", i, CPU.Registers[i]);
                     }
-                    ImGui::Text("Current Instruction - %X", CPU.GetCurrentOpCode());
+                    ImGui::Text("Current Instruction - %X", CPU.CurrentOpCode);
+                    ImGui::Text("Total Ticks - %d", CPU.TotalTicks);
                 }
                 ImGui::EndTabItem();
             }
@@ -53,7 +53,7 @@ namespace Core::Renderer
         
         ImGui::Begin("Configuration", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
         {
-            
+            ImGui::SliderInt("Cycles Per Frame", &Config::CyclesPerFrame, 0, 1000);
         }
         ImGui::End();
     }

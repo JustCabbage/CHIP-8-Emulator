@@ -8,9 +8,9 @@ namespace Core::Renderer
 {
     inline void RenderVideoBuffer(sf::RenderTarget& Target, Emulator::CPU& CPU)
     {
-        for(int i = 0; i < CPU.VideoBuffer.size(); i++)
+        for(std::size_t i = 0; i < CPU.VideoBuffer.size(); i++)
         {
-            for(int j = 0; j < CPU.VideoBuffer[i].size(); j++)
+            for(std::size_t j = 0; j < CPU.VideoBuffer[i].size(); j++)
             {
                 if(CPU.VideoBuffer[i][j])
                 {
@@ -35,7 +35,7 @@ namespace Core::Renderer
             {
                 ImGui::BeginTabItem("Registers");
                 {
-                    for(int i = 0; i < CPU.Registers.size(); i++)
+                    for(std::size_t i = 0; i < CPU.Registers.size(); i++)
                     {
                         ImGui::Text("V%X - %X", i, CPU.Registers[i]);
                     }

@@ -80,7 +80,7 @@ namespace Core::Emulator
         {
             case 0x000A:
             {
-                for(int i = 0; i < CPU->Keypad.size(); i++)
+                for(std::size_t i = 0; i < CPU->Keypad.size(); i++)
                 {
                     if(CPU->Keypad[i])
                     {
@@ -105,7 +105,7 @@ namespace Core::Emulator
             }
             case 0x0055:
             {
-                for(int i = 0; i <= Instruction.x; i++)
+                for(std::uint8_t i = 0; i <= Instruction.x; i++)
                 {
                     CPU->Memory[CPU->I + i] = CPU->Registers[i];
                 }
@@ -114,7 +114,7 @@ namespace Core::Emulator
             }
             case 0x0065:
             {
-                for(int i = 0; i <= Instruction.x; i++)
+                for(std::uint8_t i = 0; i <= Instruction.x; i++)
                 {
                     CPU->Registers[i] = CPU->Memory[CPU->I + i];
                 }

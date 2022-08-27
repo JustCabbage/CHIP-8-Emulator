@@ -9,6 +9,7 @@ namespace Core::Emulator
     {
         Reader ROMReader(ROMPath);
 
+        this->Memory.fill(0);
         this->Reset();
 
         this->Size = ROMReader.Seek(0, std::ios::end);
@@ -26,13 +27,12 @@ namespace Core::Emulator
 
     void CPU::Reset()
     {
-        this->Memory.fill(0);
         this->Registers.fill(0);
         this->Stack.fill(0);
         std::array<std::uint8_t, 32> EmptyRow;
         EmptyRow.fill(0);
         this->VideoBuffer.fill(EmptyRow);
-        this->m_ProgramCounter = 0x200;
+        this->ProgramCounter = 0x200;
     }
 
     void CPU::HandleKeyEvent(sf::Event& Event)
@@ -50,7 +50,7 @@ namespace Core::Emulator
 
     void CPU::Cycle()
     {
-        this->CurrentOpCode = (this->Memory[this->m_ProgramCounter] << 8) + this->Memory[this->m_ProgramCounter + 1];
+        this->CurrentOpCode = (this->Memory[this->ProgramCounter] << 8) + this->Memory[this->ProgramCounter + 1];
         Instruction CurrentInstruction(this->CurrentOpCode);
 
         switch(CurrentInstruction.Type) 
@@ -62,53 +62,53 @@ namespace Core::Emulator
             }
             case 0x1000:
             {
-                this->m_ProgramCounter = CurrentInstruction.nnn;
+                this->ProgramCounter = CurrentInstruction.nnn;
                 break;
             }
             case 0x2000:
             {
-                this->Stack[this->StackPointer] = this->m_ProgramCounter;
+                this->Stack[this->StackPointer] = this->ProgramCounter;
                 this->StackPointer++;
-                this->m_ProgramCounter = CurrentInstruction.nnn;
+                this->ProgramCounter = CurrentInstruction.nnn;
                 break;
             }
             case 0x3000:
             {
                 if(this->Registers[CurrentInstruction.x] == CurrentInstruction.kk)
                 {
-                    this->m_ProgramCounter += 2;
+                    this->ProgramCounter += 2;
                 }  
-                this->m_ProgramCounter += 2;
+                this->ProgramCounter += 2;
                 break;
             }
             case 0x4000:
             {
                 if(this->Registers[CurrentInstruction.x] != CurrentInstruction.kk)
                 {
-                    this->m_ProgramCounter += 2;
+                    this->ProgramCounter += 2;
                 }  
-                this->m_ProgramCounter += 2;
+                this->ProgramCounter += 2;
                 break;
             }
             case 0x5000:
             {
                 if(this->Registers[CurrentInstruction.x] == CurrentInstruction.kk)
                 {
-                    this->m_ProgramCounter += 2;
+                    this->ProgramCounter += 2;
                 }  
-                this->m_ProgramCounter += 2;
+                this->ProgramCounter += 2;
                 break;
             }
             case 0x6000:
             {
                 this->Registers[CurrentInstruction.x] = CurrentInstruction.kk;
-                this->m_ProgramCounter += 2;
+                this->ProgramCounter += 2;
                 break;
             }
             case 0x7000:
             {
                 this->Registers[CurrentInstruction.x] += CurrentInstruction.kk;
-                this->m_ProgramCounter += 2;
+                this->ProgramCounter += 2;
                 break;
             }
             case 0x8000:
@@ -120,15 +120,26 @@ namespace Core::Emulator
             {
                 if(this->Registers[CurrentInstruction.x] != this->Registers[CurrentInstruction.y])
                 {
-                    this->m_ProgramCounter += 2;
+                    this->ProgramCounter += 2;
                 }
-                this->m_ProgramCounter += 2;
+                this->ProgramCounter += 2;
                 break;
             }
             case 0xA000:
             {
                 this->I = CurrentInstruction.nnn;
-                this->m_ProgramCounter += 2;    
+                this->ProgramCounter += 2;    
+                break;
+            }
+            case 0xB000:
+            {
+                this->ProgramCounter = this->Registers[0] + CurrentInstruction.nnn;
+                break;
+            }
+            case 0xC000:
+            {
+                this->Registers[CurrentInstruction.x] = (rand() % 256) & CurrentInstruction.kk;
+                this->ProgramCounter += 2;
                 break;
             }
             case 0xD000:
@@ -154,7 +165,7 @@ namespace Core::Emulator
                     }
                 }
                 
-                this->m_ProgramCounter += 2;
+                this->ProgramCounter += 2;
                 break;
             }
             case 0xE000:

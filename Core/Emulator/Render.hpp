@@ -39,6 +39,7 @@ namespace Core::Renderer
                     {
                         ImGui::Text("V%X - %X", i, CPU.Registers[i]);
                     }
+                    ImGui::Text("Program Counter - %X", CPU.ProgramCounter);
                     ImGui::Text("Current Instruction - %X", CPU.CurrentOpCode);
                     ImGui::Text("Total Ticks - %d", CPU.TotalTicks);
                 }
@@ -54,6 +55,10 @@ namespace Core::Renderer
         ImGui::Begin("Configuration", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
         {
             ImGui::SliderInt("Cycles Per Frame", &Config::CyclesPerFrame, 0, 1000);
+            if(ImGui::Button("Reset"))
+            {
+                CPU.Reset();
+            }
         }
         ImGui::End();
     }

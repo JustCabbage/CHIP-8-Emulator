@@ -5,7 +5,7 @@
 namespace Core::Config
 {
     inline std::int32_t CyclesPerFrame = 1;
-    inline std::map<sf::Keyboard::Key, std::uint16_t> Bindings =
+    inline std::map<sf::Keyboard::Key, std::uint8_t> Bindings =
     {
         {sf::Keyboard::Num1, 0x1},
         {sf::Keyboard::Num2, 0x2},

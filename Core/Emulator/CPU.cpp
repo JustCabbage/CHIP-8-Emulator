@@ -138,10 +138,10 @@ namespace Core::Emulator
                 std::uint16_t PixelHeight = CurrentInstruction.n;
 
                 this->Registers[0xF] = 0x0;
-                for(int i = 0; i < PixelHeight; i++)
+                for(std::uint16_t i = 0; i < PixelHeight; i++)
                 {
                     std::uint8_t Byte = this->Memory[this->I + i];
-                    for(int j = 0; j < 8; j++)
+                    for(std::uint8_t j = 0; j < 8; j++)
                     {
                         if(Byte & (0x80 >> j))
                         {

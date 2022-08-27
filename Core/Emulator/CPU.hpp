@@ -17,7 +17,7 @@ namespace Core::Emulator
         void Cycle();
     public:
         std::uint16_t I = 0;
-        std::uint64_t Size = 0;
+        std::uint32_t Size = 0;
         std::uint8_t DelayTimer = 0;
         std::uint64_t TotalTicks = 0;
         std::uint8_t StackPointer = 0;

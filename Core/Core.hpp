@@ -3,9 +3,9 @@
 
 namespace Core
 {
-    void Initialize(const std::string& ROMPath)
+    inline void Initialize(const std::string& RomPath)
     {
-        Emulator::CPU CPU(ROMPath);
+        Emulator::CPU CPU(RomPath);
         sf::RenderWindow EmulatorWindow(sf::VideoMode({1280, 640}), "CHIP-8 Emulator | github.com/JustCabbage", sf::Style::Close);
         EmulatorWindow.setFramerateLimit(60);
         ImGui::SFML::Init(EmulatorWindow);
@@ -23,13 +23,22 @@ namespace Core
                 case sf::Event::Closed:
                     EmulatorWindow.close();
                     break;
+                case sf::Event::KeyPressed:
+                    CPU.HandleKeyEvent(event);
+                    break;
+                case sf::Event::KeyReleased:
+                    CPU.HandleKeyEvent(event);
+                    break;
                 }
             }
             
             ImGui::SFML::Update(EmulatorWindow, Clock.restart());
             Renderer::RenderUI(CPU);
             
-            CPU.Cycle();
+            CPU.CycleTimers();
+
+            for(std::int32_t i = 0; i < Config::CyclesPerFrame; i++)
+                CPU.Cycle();
 
             EmulatorWindow.clear();
             Renderer::RenderVideoBuffer(EmulatorWindow, CPU);

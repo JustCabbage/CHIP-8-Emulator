@@ -8,20 +8,17 @@ namespace Core::Emulator
         {
             case 0x00E0:
             {
-                std::array<std::uint8_t, 32> EmptyRow;
-                EmptyRow.fill(0);
-                CPU->VideoBuffer.fill(EmptyRow);
-                CPU->ProgramCounter += 2;
+                CPU->VideoBuffer.fill({});
                 break;
             }
             case 0x00EE:
             {
                 CPU->StackPointer--;
                 CPU->ProgramCounter = CPU->Stack[CPU->StackPointer];
-                CPU->ProgramCounter += 2;
                 break;
             }
         }
+        CPU->ProgramCounter += 2;
     }
 
     void Instructions::ParseBlock8(CPU* CPU, Instruction& Instruction)
@@ -31,53 +28,91 @@ namespace Core::Emulator
             case 0x0000:
             {
                 CPU->Registers[Instruction.x] = CPU->Registers[Instruction.y];
-                CPU->ProgramCounter += 2;
                 break;
             }
             case 0x0001:
             {
                 CPU->Registers[Instruction.x] |= CPU->Registers[Instruction.y];
-                CPU->ProgramCounter += 2;
+                break;
+            }
+            case 0x0002:
+            {
+                CPU->Registers[Instruction.x] &= CPU->Registers[Instruction.y];
                 break;
             }
             case 0x0003:
             {
                 CPU->Registers[Instruction.x] ^= CPU->Registers[Instruction.y];
-                CPU->ProgramCounter += 2;
+                break;
+            }
+            case 0x0004:
+            {
+                std::uint8_t Value = CPU->Registers[Instruction.x] + CPU->Registers[Instruction.y];
+                CPU->Registers[0xF] = Value > 0xFF ? 1 : 0;
+                CPU->Registers[Instruction.x] = Value & 0xFF;
+                break;
+            }
+            case 0x0005:
+            {
+                CPU->Registers[0xF] = CPU->Registers[Instruction.x] > CPU->Registers[Instruction.y] ? 1 : 0;
+                CPU->Registers[Instruction.x] -= CPU->Registers[Instruction.y];
+                break;
+            }
+            case 0x0006:
+            {
+                CPU->Registers[0xF] = CPU->Registers[Instruction.x] & 1;
+                CPU->Registers[Instruction.x] >>= 1;
+                break;
+            }
+            case 0x0007:
+            {
+                CPU->Registers[0xF] = CPU->Registers[Instruction.y] > CPU->Registers[Instruction.x] ? 1 : 0;
+                CPU->Registers[Instruction.x] = CPU->Registers[Instruction.y] - CPU->Registers[Instruction.x];
+                break;
+            }
+            case 0x000E:
+            {
+                CPU->Registers[0xF] = (CPU->Registers[Instruction.x] & 0x80) >> 7;
+                CPU->Registers[Instruction.x] <<= 1;
                 break;
             }
         }
+        CPU->ProgramCounter += 2;
     }
 
     void Instructions::ParseBlockE(CPU* CPU, Instruction& Instruction)
     {
         switch(Instruction.kk)
         {
-            case 0x00A1:
-            {
-                if(!CPU->Keypad[Instruction.x])
-                {
-                    CPU->ProgramCounter += 2;
-                }
-                CPU->ProgramCounter += 2;
-                break;
-            }
             case 0x009E:
             {
-                if(CPU->Keypad[Instruction.x])
+                if(CPU->Keypad[CPU->Registers[Instruction.x]])
                 {
                     CPU->ProgramCounter += 2;
                 }
-                CPU->ProgramCounter += 2;
+                break;
+            }
+            case 0x00A1:
+            {
+                if(!CPU->Keypad[CPU->Registers[Instruction.x]])
+                {
+                    CPU->ProgramCounter += 2;
+                }
                 break;
             }
         }
+        CPU->ProgramCounter += 2;
     }
 
     void Instructions::ParseBlockF(CPU* CPU, Instruction& Instruction)
     {
         switch(Instruction.kk)
         {
+            case 0x0007:
+            {
+                CPU->Registers[Instruction.x] = CPU->DelayTimer;
+                break;
+            }
             case 0x000A:
             {
                 for(std::uint8_t i = 0; i < CPU->Keypad.size(); i++)
@@ -89,18 +124,40 @@ namespace Core::Emulator
                         break;
                     }
                 }
-                break;
-            }
-            case 0x0007:
-            {
-                CPU->Registers[Instruction.x] = CPU->DelayTimer;
-                CPU->ProgramCounter += 2;
+                CPU->ProgramCounter -= 2;
                 break;
             }
             case 0x0015:
             {
                 CPU->DelayTimer = CPU->Registers[Instruction.x];
-                CPU->ProgramCounter += 2;
+                break;
+            }
+            case 0x0018:
+            {
+                CPU->SoundTimer = CPU->Registers[Instruction.x];
+                if(CPU->SoundTimer > 0)
+                {
+                    // Play Sound
+                }
+                break;
+            }
+            case 0x001E:
+            {
+                CPU->I += CPU->Registers[Instruction.x];
+                break;
+            }
+            case 0x0029:
+            {
+                CPU->I = CPU->Registers[Instruction.x] * 0x5;
+                break;
+            }
+            case 0x0033:
+            {
+                std::uint8_t Value = CPU->Registers[Instruction.x]; // 255
+                CPU->Memory[CPU->I + 2] = Value % 10;
+                Value /= 10;
+                CPU->Memory[CPU->I + 1] = Value % 10;
+                CPU->Memory[CPU->I] = Value / 10;
                 break;
             }
             case 0x0055:
@@ -109,7 +166,7 @@ namespace Core::Emulator
                 {
                     CPU->Memory[CPU->I + i] = CPU->Registers[i];
                 }
-                CPU->ProgramCounter += 2;
+                CPU->I += Instruction.x;
                 break;
             }
             case 0x0065:
@@ -118,16 +175,10 @@ namespace Core::Emulator
                 {
                     CPU->Registers[i] = CPU->Memory[CPU->I + i];
                 }
-                CPU->ProgramCounter += 2;
-                break;
-            }
-            case 0x001E:
-            {
-                CPU->I += CPU->Registers[Instruction.x];
-                CPU->Registers[0xF] = CPU->I > 0x0FFF ? 1 : 0; 
-                CPU->ProgramCounter += 2;
+                CPU->I += Instruction.x;
                 break;
             }
         }
+        CPU->ProgramCounter += 2;
     }
 }

@@ -10,6 +10,8 @@ namespace Core
         EmulatorWindow.setFramerateLimit(60);
         ImGui::SFML::Init(EmulatorWindow);
         ImGui::GetIO().IniFilename = NULL;
+        const float TimeIncrement = 1.f / 60.f;
+        float TotalTime = 0.f;
 
         sf::Clock Clock;
         while(EmulatorWindow.isOpen())
@@ -31,11 +33,18 @@ namespace Core
                     break;
                 }
             }
+
+            sf::Time DeltaTime = Clock.restart();
+            TotalTime += DeltaTime.asSeconds();
             
-            ImGui::SFML::Update(EmulatorWindow, Clock.restart());
+            ImGui::SFML::Update(EmulatorWindow, DeltaTime);
             Renderer::RenderUI(CPU);
             
-            CPU.CycleTimers();
+            while(TotalTime >= TimeIncrement)
+            {
+                CPU.CycleTimers();
+                TotalTime -= TimeIncrement;
+            }
 
             for(std::int32_t i = 0; i < Config::CyclesPerFrame; i++)
                 CPU.Cycle();

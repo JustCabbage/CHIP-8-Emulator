@@ -7,8 +7,12 @@ namespace Core::Emulator
 {
     CPU::CPU(const std::string& ROMPath)
     {
-        Reader ROMReader(ROMPath);
+        this->LoadROM(ROMPath);
+    }
 
+    void CPU::LoadROM(const std::string& ROMPath)
+    {
+        Reader ROMReader(ROMPath);
         this->Memory.fill(0);
         this->Reset();
 
@@ -16,13 +20,12 @@ namespace Core::Emulator
         ROMReader.Seek(0, std::ios::beg);
 
         std::vector<std::uint8_t> Bytes = ROMReader.ReadBytes(this->Size);
-
         for(std::uint32_t i = 0; i < this->Size; i++)
         {
             this->Memory[i + 0x200] = Bytes[i];
         }
         
-        std::cout << "Loaded " << this->Size << " Bytes from \"" << ROMPath << "\"\n"; 
+        std::cout << "Loaded " << this->Size << " Bytes from \"" << ROMPath << "\"\n";
     }
 
     void CPU::Reset()

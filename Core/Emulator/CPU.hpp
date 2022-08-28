@@ -11,6 +11,7 @@ namespace Core::Emulator
     {
     public:
         CPU(const std::string& ROMPath);
+        void LoadROM(const std::string& ROMPath);
         void Reset();
         void HandleKeyEvent(sf::Event& Event);
         void CycleTimers();

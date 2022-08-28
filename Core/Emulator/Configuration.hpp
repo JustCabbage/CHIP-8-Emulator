@@ -1,10 +1,13 @@
 #pragma once
 #include <iostream>
+#include <array>
 #include <SFML/Graphics.hpp>
 
 namespace Core::Config
 {
-    inline std::int32_t CyclesPerFrame = 1;
+    inline std::int32_t CyclesPerFrame = 10;
+    inline std::int32_t RefreshRate = 60;
+    inline std::array<float, 3> Color = {1.f, 1.f, 1.f};
     inline std::map<sf::Keyboard::Key, std::uint8_t> Bindings =
     {
         {sf::Keyboard::Num1, 0x1},

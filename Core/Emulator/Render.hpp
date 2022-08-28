@@ -17,7 +17,7 @@ namespace Core::Renderer
                     sf::RectangleShape Pixel;
                     Pixel.setPosition({static_cast<float>(i * 10), static_cast<float>(j * 10)});
                     Pixel.setSize({10, 10});
-                    Pixel.setFillColor(sf::Color::Blue);
+                    Pixel.setFillColor(sf::Color(static_cast<std::uint8_t>(Config::Color[0] * 255), static_cast<std::uint8_t>(Config::Color[1] * 255), static_cast<std::uint8_t>(Config::Color[2] * 255)));
                     Target.draw(Pixel);
                 }
             }
@@ -26,6 +26,7 @@ namespace Core::Renderer
 
     inline void RenderUI(Emulator::CPU& CPU)
     {
+        ImGui::StyleColorsDark();
         ImGui::SetNextWindowSize({1280 - 640, 640});
         ImGui::SetNextWindowPos({640, 0});
 
@@ -33,17 +34,41 @@ namespace Core::Renderer
         {
             ImGui::BeginTabBar("#ProcessorInfoTabs");
             {
-                ImGui::BeginTabItem("Registers");
+                if(ImGui::BeginTabItem("Statistics"))
                 {
-                    for(std::size_t i = 0; i < CPU.Registers.size(); i++)
+                    ImGui::BeginChild("#StatisticsChild", ImVec2(625, 0), true);
+                    ImGui::Columns(2, 0, false);
+                    ImGui::Text("Registers");
+                    ImGui::NextColumn();
+                    ImGui::Text("Stack");
+                    ImGui::Separator();
+                    ImGui::NextColumn();
+                
+                    for (int i = 0; i < CPU.Registers.size(); i++)
                     {
-                        ImGui::Text("V%X - %X", i, CPU.Registers[i]);
+                        ImGui::Text("V%d - %X", i, CPU.Registers[i]);
                     }
+
+                    ImGui::NextColumn();
+
+                    for (int i = 0; i < CPU.Stack.size(); i++) 
+                    {
+                        ImGui::Text("#%d - %X", i, CPU.Stack[i]);
+                    }
+                        
+                    ImGui::Columns(1);
+                    ImGui::Separator();
+
+                    ImGui::Text("Framerate - %.2f", ImGui::GetIO().Framerate);
                     ImGui::Text("Program Counter - %X", CPU.ProgramCounter);
-                    ImGui::Text("Current Instruction - %X", CPU.CurrentOpCode);
-                    ImGui::Text("Total Ticks - %d", CPU.TotalTicks);
+                    ImGui::Text("Stack Pointer - %d", CPU.StackPointer);
+                    ImGui::Text("Delay Timer - %d", CPU.DelayTimer);
+                    ImGui::Text("Sound Timer - %d", CPU.SoundTimer);
+                    ImGui::Text("I - %X", CPU.I);
+
+                    ImGui::EndChild();
+                    ImGui::EndTabItem();
                 }
-                ImGui::EndTabItem();
             }
             ImGui::EndTabBar();
         }
@@ -55,6 +80,8 @@ namespace Core::Renderer
         ImGui::Begin("Configuration", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
         {
             ImGui::SliderInt("Cycles Per Frame", &Config::CyclesPerFrame, 0, 1000);
+            ImGui::SliderInt("Refresh Rate", &Config::RefreshRate, 1, 1000);
+            ImGui::ColorEdit3("Color", Config::Color.data());
             if(ImGui::Button("Reset"))
             {
                 CPU.Reset();

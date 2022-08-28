@@ -7,7 +7,6 @@ namespace Core
     {
         Emulator::CPU CPU(RomPath);
         sf::RenderWindow EmulatorWindow(sf::VideoMode({1280, 640}), "CHIP-8 Emulator | github.com/JustCabbage", sf::Style::Close);
-        EmulatorWindow.setFramerateLimit(60);
         ImGui::SFML::Init(EmulatorWindow);
         ImGui::GetIO().IniFilename = NULL;
         const float TimeIncrement = 1.f / 60.f;
@@ -16,6 +15,7 @@ namespace Core
         sf::Clock Clock;
         while(EmulatorWindow.isOpen())
         {
+            
             sf::Event event;
             while(EmulatorWindow.pollEvent(event))
             {
@@ -33,7 +33,8 @@ namespace Core
                     break;
                 }
             }
-
+            EmulatorWindow.setFramerateLimit(Config::RefreshRate);
+            
             sf::Time DeltaTime = Clock.restart();
             TotalTime += DeltaTime.asSeconds();
             

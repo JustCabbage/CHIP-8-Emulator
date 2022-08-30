@@ -31,9 +31,9 @@ namespace Core::Emulator
 
     namespace Instructions
     {
-        void ParseBlock0(CPU* CPU, Instruction& Instruction);
-        void ParseBlock8(CPU* CPU, Instruction& Instruction);
-        void ParseBlockE(CPU* CPU, Instruction& Instruction);
-        void ParseBlockF(CPU* CPU, Instruction& Instruction);
+        void ParseBlock0(CPU* CPU, const Instruction& Instruction);
+        void ParseBlock8(CPU* CPU, const Instruction& Instruction);
+        void ParseBlockE(CPU* CPU, const Instruction& Instruction);
+        void ParseBlockF(CPU* CPU, const Instruction& Instruction);
     }
 }

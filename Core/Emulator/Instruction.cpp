@@ -2,7 +2,7 @@
 
 namespace Core::Emulator
 {
-    void Instructions::ParseBlock0(CPU* CPU, Instruction& Instruction)
+    void Instructions::ParseBlock0(CPU* CPU, const Instruction& Instruction)
     {
         switch(Instruction.kk)
         {
@@ -21,7 +21,7 @@ namespace Core::Emulator
         CPU->ProgramCounter += 2;
     }
 
-    void Instructions::ParseBlock8(CPU* CPU, Instruction& Instruction)
+    void Instructions::ParseBlock8(CPU* CPU, const Instruction& Instruction)
     {
         switch(Instruction.n)
         {
@@ -47,35 +47,35 @@ namespace Core::Emulator
             }
             case 0x0004:
             {
-                std::uint8_t Carry = (CPU->Registers[Instruction.x] + CPU->Registers[Instruction.y]) > 0xFF ? 1 : 0;
+                const std::uint8_t Carry = (CPU->Registers[Instruction.x] + CPU->Registers[Instruction.y]) > 0xFF ? 1 : 0;
                 CPU->Registers[Instruction.x] += CPU->Registers[Instruction.y];
                 CPU->Registers[0xF] = Carry;
                 break;
             }
             case 0x0005:
             {
-                std::uint8_t Borrow = (CPU->Registers[Instruction.x] >= CPU->Registers[Instruction.y]);
+                const std::uint8_t Borrow = (CPU->Registers[Instruction.x] >= CPU->Registers[Instruction.y]);
                 CPU->Registers[Instruction.x] = CPU->Registers[Instruction.x] - CPU->Registers[Instruction.y];
                 CPU->Registers[0xF] = Borrow;
                 break;
             }
             case 0x0006:
             {
-                std::uint8_t Flag = (CPU->Registers[Instruction.x] & 1) > 0;
+                const std::uint8_t Flag = (CPU->Registers[Instruction.x] & 1) > 0;
                 CPU->Registers[Instruction.x] = CPU->Registers[Instruction.y] >> 1;
                 CPU->Registers[0xF] = Flag;
                 break;
             }
             case 0x0007:
             {
-                std::uint8_t Borrow = CPU->Registers[Instruction.y] > CPU->Registers[Instruction.x] ? 1 : 0;
+                const std::uint8_t Borrow = CPU->Registers[Instruction.y] > CPU->Registers[Instruction.x] ? 1 : 0;
                 CPU->Registers[Instruction.x] = CPU->Registers[Instruction.y] - CPU->Registers[Instruction.x];
                 CPU->Registers[0xF] = Borrow;
                 break;
             }
             case 0x000E:
             {
-                std::uint8_t Flag = ((CPU->Registers[Instruction.x] & 0x80) > 0);
+                const std::uint8_t Flag = ((CPU->Registers[Instruction.x] & 0x80) > 0);
                 CPU->Registers[Instruction.x] = CPU->Registers[Instruction.y] << 1;
                 CPU->Registers[0xF] = Flag;
                 break;
@@ -84,7 +84,7 @@ namespace Core::Emulator
         CPU->ProgramCounter += 2;
     }
 
-    void Instructions::ParseBlockE(CPU* CPU, Instruction& Instruction)
+    void Instructions::ParseBlockE(CPU* CPU, const Instruction& Instruction)
     {
         switch(Instruction.kk)
         {
@@ -108,7 +108,7 @@ namespace Core::Emulator
         CPU->ProgramCounter += 2;
     }
 
-    void Instructions::ParseBlockF(CPU* CPU, Instruction& Instruction)
+    void Instructions::ParseBlockF(CPU* CPU, const Instruction& Instruction)
     {
         switch(Instruction.kk)
         {

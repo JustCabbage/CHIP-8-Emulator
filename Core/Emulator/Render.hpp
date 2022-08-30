@@ -60,6 +60,8 @@ namespace Core::Renderer
                     ImGui::Separator();
 
                     ImGui::Text("Framerate - %.2f", ImGui::GetIO().Framerate);
+                    ImGui::Text("Current Instruction - %X", CPU.CurrentOpCode);
+                    ImGui::Text("Total Cycles - %X", CPU.TotalTicks);
                     ImGui::Text("Program Counter - %X", CPU.ProgramCounter);
                     ImGui::Text("Stack Pointer - %d", CPU.StackPointer);
                     ImGui::Text("Delay Timer - %d", CPU.DelayTimer);

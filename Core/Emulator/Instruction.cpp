@@ -47,33 +47,37 @@ namespace Core::Emulator
             }
             case 0x0004:
             {
-                std::uint8_t Value = CPU->Registers[Instruction.x] + CPU->Registers[Instruction.y];
-                CPU->Registers[0xF] = Value > 0xFF ? 1 : 0;
-                CPU->Registers[Instruction.x] = Value & 0xFF;
+                std::uint8_t Carry = (CPU->Registers[Instruction.x] + CPU->Registers[Instruction.y]) > 0xFF ? 1 : 0;
+                CPU->Registers[Instruction.x] += CPU->Registers[Instruction.y];
+                CPU->Registers[0xF] = Carry;
                 break;
             }
             case 0x0005:
             {
-                CPU->Registers[0xF] = CPU->Registers[Instruction.x] > CPU->Registers[Instruction.y] ? 1 : 0;
-                CPU->Registers[Instruction.x] -= CPU->Registers[Instruction.y];
+                std::uint8_t Borrow = (CPU->Registers[Instruction.x] >= CPU->Registers[Instruction.y]);
+                CPU->Registers[Instruction.x] = CPU->Registers[Instruction.x] - CPU->Registers[Instruction.y];
+                CPU->Registers[0xF] = Borrow;
                 break;
             }
             case 0x0006:
             {
-                CPU->Registers[0xF] = CPU->Registers[Instruction.x] & 1;
-                CPU->Registers[Instruction.x] >>= 1;
+                std::uint8_t Flag = (CPU->Registers[Instruction.x] & 1) > 0;
+                CPU->Registers[Instruction.x] = CPU->Registers[Instruction.y] >> 1;
+                CPU->Registers[0xF] = Flag;
                 break;
             }
             case 0x0007:
             {
-                CPU->Registers[0xF] = CPU->Registers[Instruction.y] > CPU->Registers[Instruction.x] ? 1 : 0;
+                std::uint8_t Borrow = CPU->Registers[Instruction.y] > CPU->Registers[Instruction.x] ? 1 : 0;
                 CPU->Registers[Instruction.x] = CPU->Registers[Instruction.y] - CPU->Registers[Instruction.x];
+                CPU->Registers[0xF] = Borrow;
                 break;
             }
             case 0x000E:
             {
-                CPU->Registers[0xF] = (CPU->Registers[Instruction.x] & 0x80) >> 7;
-                CPU->Registers[Instruction.x] <<= 1;
+                std::uint8_t Flag = ((CPU->Registers[Instruction.x] & 0x80) > 0);
+                CPU->Registers[Instruction.x] = CPU->Registers[Instruction.y] << 1;
+                CPU->Registers[0xF] = Flag;
                 break;
             }
         }

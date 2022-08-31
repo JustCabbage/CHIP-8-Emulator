@@ -4,7 +4,7 @@ namespace Core::Emulator
 {
     void Instructions::ParseBlock0(CPU* CPU, const Instruction& Instruction)
     {
-        switch(Instruction.kk)
+        switch (Instruction.kk)
         {
             case 0x00E0:
             {
@@ -23,7 +23,7 @@ namespace Core::Emulator
 
     void Instructions::ParseBlock8(CPU* CPU, const Instruction& Instruction)
     {
-        switch(Instruction.n)
+        switch (Instruction.n)
         {
             case 0x0000:
             {
@@ -86,11 +86,11 @@ namespace Core::Emulator
 
     void Instructions::ParseBlockE(CPU* CPU, const Instruction& Instruction)
     {
-        switch(Instruction.kk)
+        switch (Instruction.kk)
         {
             case 0x009E:
             {
-                if(CPU->Keypad[CPU->Registers[Instruction.x]])
+                if (CPU->Keypad[CPU->Registers[Instruction.x]])
                 {
                     CPU->ProgramCounter += 2;
                 }
@@ -98,7 +98,7 @@ namespace Core::Emulator
             }
             case 0x00A1:
             {
-                if(!CPU->Keypad[CPU->Registers[Instruction.x]])
+                if (!CPU->Keypad[CPU->Registers[Instruction.x]])
                 {
                     CPU->ProgramCounter += 2;
                 }
@@ -110,7 +110,7 @@ namespace Core::Emulator
 
     void Instructions::ParseBlockF(CPU* CPU, const Instruction& Instruction)
     {
-        switch(Instruction.kk)
+        switch (Instruction.kk)
         {
             case 0x0007:
             {
@@ -119,9 +119,9 @@ namespace Core::Emulator
             }
             case 0x000A:
             {
-                for(std::uint8_t i = 0; i < CPU->Keypad.size(); i++)
+                for (std::uint8_t i = 0; i < CPU->Keypad.size(); i++)
                 {
-                    if(CPU->Keypad[i])
+                    if (CPU->Keypad[i])
                     {
                         CPU->Registers[Instruction.x] = i;
                         CPU->ProgramCounter += 2;
@@ -139,7 +139,7 @@ namespace Core::Emulator
             case 0x0018:
             {
                 CPU->SoundTimer = CPU->Registers[Instruction.x];
-                if(CPU->SoundTimer > 0)
+                if (CPU->SoundTimer > 0)
                 {
                     // Play Sound
                 }
@@ -166,7 +166,7 @@ namespace Core::Emulator
             }
             case 0x0055:
             {
-                for(std::uint8_t i = 0; i <= Instruction.x; i++)
+                for (std::uint8_t i = 0; i <= Instruction.x; i++)
                 {
                     CPU->Memory[CPU->I + i] = CPU->Registers[i];
                 }
@@ -175,7 +175,7 @@ namespace Core::Emulator
             }
             case 0x0065:
             {
-                for(std::uint8_t i = 0; i <= Instruction.x; i++)
+                for (std::uint8_t i = 0; i <= Instruction.x; i++)
                 {
                     CPU->Registers[i] = CPU->Memory[CPU->I + i];
                 }

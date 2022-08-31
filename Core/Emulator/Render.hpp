@@ -108,9 +108,12 @@ namespace Core::Renderer
                 {
                     for (const auto& Entry : std::filesystem::recursive_directory_iterator("roms"))
                     {
-                        if (ImGui::Button(Entry.path().string().c_str()) && Entry.path().extension() == ".ch8")
+                        if(Entry.path().extension() == ".ch8")
                         {
-                            CPU.LoadROM(Entry.path().string());
+                            if (ImGui::Button(Entry.path().string().c_str()))
+                            {
+                                CPU.LoadROM(Entry.path().string());
+                            }
                         }
                     }
                     ImGui::EndTabItem();

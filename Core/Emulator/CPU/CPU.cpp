@@ -35,7 +35,7 @@ namespace Core::Emulator
         this->I = 0;
         this->DelayTimer = 0;
         this->SoundTimer = 0;
-        this->ProgramCounter = 0;
+        this->ProgramCounter = 0x200;
         this->StackPointer = 0;
         this->Stack.fill(0);
         this->Keypad.clear();

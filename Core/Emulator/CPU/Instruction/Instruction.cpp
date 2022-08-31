@@ -157,7 +157,7 @@ namespace Core::Emulator
             }
             case 0x0033:
             {
-                std::uint8_t Value = CPU->Registers[Instruction.x]; // 255
+                std::uint8_t Value = CPU->Registers[Instruction.x];
                 CPU->Memory[CPU->I + 2] = Value % 10;
                 Value /= 10;
                 CPU->Memory[CPU->I + 1] = Value % 10;

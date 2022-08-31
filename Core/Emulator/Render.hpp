@@ -1,8 +1,10 @@
 #pragma once
+#include <filesystem>
 #include <imgui-SFML.h>
 #include <imgui.h>
 #include "Configuration.hpp"
-#include "CPU.hpp"
+#include "CPU/CPU.hpp"
+#include "MemoryViewer.hpp"
 
 namespace Core::Renderer
 {
@@ -71,6 +73,13 @@ namespace Core::Renderer
                     ImGui::EndChild();
                     ImGui::EndTabItem();
                 }
+                
+                if(ImGui::BeginTabItem("Memory View"))
+                {
+                    static MemoryEditor MemoryViewer;
+                    MemoryViewer.DrawContents(CPU.Memory.data(), 4096);
+                    ImGui::EndTabItem();
+                }
             }
             ImGui::EndTabBar();
         }
@@ -81,13 +90,33 @@ namespace Core::Renderer
         
         ImGui::Begin("Configuration", NULL, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
         {
-            ImGui::SliderInt("Cycles Per Frame", &Config::CyclesPerFrame, 0, 1000);
-            ImGui::SliderInt("Refresh Rate", &Config::RefreshRate, 1, 1000);
-            ImGui::ColorEdit3("Color", Config::Color.data());
-            if(ImGui::Button("Reset"))
+            ImGui::BeginTabBar("#ConfigurationBar");
             {
-                CPU.Reset();
+                if(ImGui::BeginTabItem("Settings"))
+                {
+                    ImGui::SliderInt("Cycles Per Frame", &Config::CyclesPerFrame, 0, 1000);
+                    ImGui::SliderInt("Refresh Rate", &Config::RefreshRate, 1, 1000);
+                    ImGui::ColorEdit3("Color", Config::Color.data());
+                    if(ImGui::Button("Reset"))
+                    {
+                        CPU.Reset();
+                    }
+                    ImGui::EndTabItem();
+                }
+
+                if(ImGui::BeginTabItem("ROMs"))
+                {
+                    for(const auto& Entry : std::filesystem::recursive_directory_iterator("roms"))
+                    {
+                        if(ImGui::Button(Entry.path().string().c_str()) && Entry.path().extension() == ".ch8")
+                        {
+                            CPU.LoadROM(Entry.path().string());
+                        }
+                    }
+                    ImGui::EndTabItem();
+                }
             }
+            ImGui::EndTabBar();
         }
         ImGui::End();
     }

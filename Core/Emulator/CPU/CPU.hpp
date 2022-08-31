@@ -10,7 +10,7 @@ namespace Core::Emulator
     class CPU
     {
     public:
-        CPU(const std::string& ROMPath);
+        CPU() {}
         void LoadROM(const std::string& ROMPath);
         void Reset();
         void HandleKeyEvent(sf::Event& Event);
@@ -30,5 +30,6 @@ namespace Core::Emulator
         std::uint64_t Size = 0;
         std::uint64_t TotalTicks = 0;
         std::uint16_t CurrentOpCode = 0;
+        bool LoadedROM = false;
     };
 }

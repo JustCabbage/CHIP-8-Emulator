@@ -1,19 +1,18 @@
+#include "Instruction/Instruction.hpp"
+#include "../Configuration.hpp"
+#include "../Reader.hpp"
 #include "CPU.hpp"
-#include "Reader.hpp"
-#include "Instruction.hpp"
-#include "Configuration.hpp"
 
 namespace Core::Emulator
 {
-    CPU::CPU(const std::string& ROMPath)
-    {
-        this->LoadROM(ROMPath);
-    }
-
     void CPU::LoadROM(const std::string& ROMPath)
     {
-        Reader ROMReader(ROMPath);
-        this->Memory.fill(0);
+        Reader ROMReader;
+        if(!ROMReader.SetStream(ROMPath))
+        {
+            return;
+        }
+        
         this->Reset();
 
         this->Size = ROMReader.Seek(0, std::ios::end);
@@ -26,14 +25,25 @@ namespace Core::Emulator
         }
         
         std::cout << "Loaded " << this->Size << " Bytes from \"" << ROMPath << "\"\n";
+        this->LoadedROM = true;
     }
 
     void CPU::Reset()
     {
+        this->Memory.fill(0);
         this->Registers.fill(0);
+        this->I = 0;
+        this->DelayTimer = 0;
+        this->SoundTimer = 0;
+        this->ProgramCounter = 0;
+        this->StackPointer = 0;
         this->Stack.fill(0);
+        this->Keypad.clear();
         this->VideoBuffer.fill({});
-        this->ProgramCounter = 0x200;
+        this->Size = 0;
+        this->TotalTicks = 0;
+        this->CurrentOpCode = 0;
+        this->LoadedROM = false;
     }
 
     void CPU::HandleKeyEvent(sf::Event& Event)
@@ -65,7 +75,6 @@ namespace Core::Emulator
     {
         this->CurrentOpCode = (this->Memory[this->ProgramCounter] << 8) + this->Memory[this->ProgramCounter + 1];
         const Instruction CurrentInstruction(this->CurrentOpCode);
-
         switch(CurrentInstruction.Type) 
         {
             case 0x0000:

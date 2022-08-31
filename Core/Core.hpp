@@ -3,9 +3,14 @@
 
 namespace Core
 {
-    inline void Initialize(const std::string& RomPath)
+    inline void RunEmulator(const std::string& ROMPath)
     {
-        Emulator::CPU CPU(RomPath);
+        Emulator::CPU CPU;
+        if(ROMPath.size())
+        {
+            CPU.LoadROM(ROMPath);
+        }
+
         sf::RenderWindow EmulatorWindow(sf::VideoMode({1280, 640}), "CHIP-8 Emulator | github.com/JustCabbage", sf::Style::Close);
         ImGui::SFML::Init(EmulatorWindow);
         ImGui::GetIO().IniFilename = NULL;
@@ -15,7 +20,6 @@ namespace Core
         sf::Clock Clock;
         while(EmulatorWindow.isOpen())
         {
-            
             sf::Event event;
             while(EmulatorWindow.pollEvent(event))
             {
@@ -47,7 +51,7 @@ namespace Core
                 TotalTime -= TimeIncrement;
             }
 
-            for(std::int32_t i = 0; i < Config::CyclesPerFrame; i++)
+            for(std::int32_t i = 0; i < Config::CyclesPerFrame && CPU.LoadedROM; i++)
                 CPU.Cycle();
 
             EmulatorWindow.clear();
@@ -57,5 +61,14 @@ namespace Core
         }
 
         ImGui::SFML::Shutdown();
+    }
+
+    inline void Initialize(const std::string& ROMPath)
+    {
+        if(!std::filesystem::exists("roms"))
+        {
+            std::filesystem::create_directory("roms");
+        }
+        Core::RunEmulator(ROMPath);
     }
 }

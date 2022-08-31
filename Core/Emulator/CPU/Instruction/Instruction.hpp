@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-#include "CPU.hpp"
+#include "../CPU.hpp"
 
 namespace Core::Emulator
 {

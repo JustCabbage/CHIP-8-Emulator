@@ -19,9 +19,9 @@ namespace Core::Emulator
             this->n = OpCode & 0x000F;
             this->x = (OpCode & 0x0F00) >> 8;
             this->y = (OpCode & 0x00F0) >> 4;
-            this->kk = OpCode & 0x00FF; 
+            this->kk = OpCode & 0x00FF;
         }
-      
+
         std::uint16_t Type;
         std::uint8_t n;
         std::uint8_t x, y;

@@ -8,7 +8,7 @@ namespace Core::Emulator
     void CPU::LoadROM(const std::string& ROMPath)
     {
         Reader ROMReader;
-        if(!ROMReader.SetStream(ROMPath))
+        if (!ROMReader.SetStream(ROMPath))
         {
             return;
         }
@@ -19,7 +19,7 @@ namespace Core::Emulator
         ROMReader.Seek(0, std::ios::beg);
 
         const std::vector<std::uint8_t> Bytes = ROMReader.ReadBytes(this->Size);
-        for(std::uint32_t i = 0; i < this->Size; i++)
+        for (std::uint32_t i = 0; i < this->Size; i++)
         {
             this->Memory[i + 0x200] = Bytes[i];
         }
@@ -48,7 +48,7 @@ namespace Core::Emulator
 
     void CPU::HandleKeyEvent(sf::Event& Event)
     {
-        if(Config::Bindings.find(Event.key.code) != Config::Bindings.end())
+        if (Config::Bindings.find(Event.key.code) != Config::Bindings.end())
         {
             this->Keypad[Config::Bindings[Event.key.code]] = (Event.type == sf::Event::KeyPressed);
         }
@@ -56,12 +56,12 @@ namespace Core::Emulator
 
     void CPU::CycleTimers()
     {
-        if(this->DelayTimer > 0)
+        if (this->DelayTimer > 0)
         {
             this->DelayTimer--;
         }
 
-        if(this->SoundTimer > 0)
+        if (this->SoundTimer > 0)
         {
             this->SoundTimer--;
         }
@@ -75,7 +75,7 @@ namespace Core::Emulator
     {
         this->CurrentOpCode = (this->Memory[this->ProgramCounter] << 8) + this->Memory[this->ProgramCounter + 1];
         const Instruction CurrentInstruction(this->CurrentOpCode);
-        switch(CurrentInstruction.Type) 
+        switch (CurrentInstruction.Type)
         {
             case 0x0000:
             {
@@ -96,16 +96,16 @@ namespace Core::Emulator
             }
             case 0x3000:
             {
-                if(this->Registers[CurrentInstruction.x] == CurrentInstruction.kk)
+                if (this->Registers[CurrentInstruction.x] == CurrentInstruction.kk)
                 {
                     this->ProgramCounter += 2;
-                }  
+                }
                 this->ProgramCounter += 2;
                 break;
             }
             case 0x4000:
             {
-                if(this->Registers[CurrentInstruction.x] != CurrentInstruction.kk)
+                if (this->Registers[CurrentInstruction.x] != CurrentInstruction.kk)
                 {
                     this->ProgramCounter += 2;
                 }  
@@ -114,10 +114,10 @@ namespace Core::Emulator
             }
             case 0x5000:
             {
-                if(this->Registers[CurrentInstruction.x] == this->Registers[CurrentInstruction.y])
+                if (this->Registers[CurrentInstruction.x] == this->Registers[CurrentInstruction.y])
                 {
                     this->ProgramCounter += 2;
-                }  
+                }
                 this->ProgramCounter += 2;
                 break;
             }
@@ -140,7 +140,7 @@ namespace Core::Emulator
             }
             case 0x9000:
             {
-                if(this->Registers[CurrentInstruction.x] != this->Registers[CurrentInstruction.y])
+                if (this->Registers[CurrentInstruction.x] != this->Registers[CurrentInstruction.y])
                 {
                     this->ProgramCounter += 2;
                 }
@@ -150,7 +150,7 @@ namespace Core::Emulator
             case 0xA000:
             {
                 this->I = CurrentInstruction.nnn;
-                this->ProgramCounter += 2;    
+                this->ProgramCounter += 2;
                 break;
             }
             case 0xB000:
@@ -171,21 +171,21 @@ namespace Core::Emulator
                 const std::uint16_t Height = CurrentInstruction.n;
                 
                 this->Registers[0xF] = 0;
-                for(std::uint16_t i = 0; i < Height; i++)
+                for (std::uint16_t i = 0; i < Height; i++)
                 {
                     const std::uint8_t Pixel = this->Memory[I + i];
-                    for(std::uint8_t j = 0; j < 8; j++)
+                    for (std::uint8_t j = 0; j < 8; j++)
                     {
-                        if(Pixel & (0x80 >> j))
+                        if (Pixel & (0x80 >> j))
                         {
                             const std::uint8_t FinalX = (X + j) % 64;
                             const std::uint8_t FinalY = (Y + i) % 32;
-                            if(this->VideoBuffer[FinalX][FinalY])
+                            if (this->VideoBuffer[FinalX][FinalY])
                             {
                                 this->Registers[0xF] = 1;
                             }
                             this->VideoBuffer[FinalX][FinalY] ^= 1;
-                        }                                          
+                        }
                     }
                 }
                 this->ProgramCounter += 2;

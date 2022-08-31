@@ -6,25 +6,26 @@ namespace Core
     inline void RunEmulator(const std::string& ROMPath)
     {
         Emulator::CPU CPU;
-        if(ROMPath.size())
+        if (ROMPath.size())
         {
             CPU.LoadROM(ROMPath);
         }
 
-        sf::RenderWindow EmulatorWindow(sf::VideoMode({1280, 640}), "CHIP-8 Emulator | github.com/JustCabbage", sf::Style::Close);
+        const std::string Title = "CHIP-8 Emulator | github.com/JustCabbage";
+        sf::RenderWindow EmulatorWindow(sf::VideoMode({1280, 640}), Title, sf::Style::Close);
         ImGui::SFML::Init(EmulatorWindow);
         ImGui::GetIO().IniFilename = NULL;
         const float TimeIncrement = 1.f / 60.f;
         float TotalTime = 0.f;
 
         sf::Clock Clock;
-        while(EmulatorWindow.isOpen())
+        while (EmulatorWindow.isOpen())
         {
             sf::Event event;
-            while(EmulatorWindow.pollEvent(event))
+            while (EmulatorWindow.pollEvent(event))
             {
                 ImGui::SFML::ProcessEvent(event);
-                switch(event.type)
+                switch (event.type)
                 {
                 case sf::Event::Closed:
                     EmulatorWindow.close();
@@ -45,14 +46,16 @@ namespace Core
             ImGui::SFML::Update(EmulatorWindow, DeltaTime);
             Renderer::RenderUI(CPU);
             
-            while(TotalTime >= TimeIncrement)
+            while (TotalTime >= TimeIncrement)
             {
                 CPU.CycleTimers();
                 TotalTime -= TimeIncrement;
             }
 
-            for(std::int32_t i = 0; i < Config::CyclesPerFrame && CPU.LoadedROM; i++)
+            for (std::int32_t i = 0; i < Config::CyclesPerFrame && CPU.LoadedROM; i++)
+            {
                 CPU.Cycle();
+            }
 
             EmulatorWindow.clear();
             Renderer::RenderVideoBuffer(EmulatorWindow, CPU);
@@ -65,7 +68,7 @@ namespace Core
 
     inline void Initialize(const std::string& ROMPath)
     {
-        if(!std::filesystem::exists("roms"))
+        if (!std::filesystem::exists("roms"))
         {
             std::filesystem::create_directory("roms");
         }

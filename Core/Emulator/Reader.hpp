@@ -16,7 +16,7 @@ namespace Core::Emulator
 
         bool SetStream(const std::string& StreamPath)
         {
-            if(m_CurrentStream.is_open())
+            if (m_CurrentStream.is_open())
             {
                 m_CurrentStream.close();
             }

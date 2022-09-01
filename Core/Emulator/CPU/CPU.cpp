@@ -1,5 +1,4 @@
 #include "Instruction/Instruction.hpp"
-#include "../Configuration.hpp"
 #include "../Reader.hpp"
 #include "CPU.hpp"
 
@@ -46,11 +45,11 @@ namespace Core::Emulator
         this->LoadedROM = false;
     }
 
-    void CPU::HandleKeyEvent(sf::Event& Event)
+    void CPU::HandleKeyEvent(sf::Event& Event, Config& Settings)
     {
-        if (Config::Bindings.find(Event.key.code) != Config::Bindings.end())
+        if (Settings.Bindings.find(Event.key.code) != Settings.Bindings.end())
         {
-            this->Keypad[Config::Bindings[Event.key.code]] = (Event.type == sf::Event::KeyPressed);
+            this->Keypad[Settings.Bindings[Event.key.code]] = (Event.type == sf::Event::KeyPressed);
         }
     }
 

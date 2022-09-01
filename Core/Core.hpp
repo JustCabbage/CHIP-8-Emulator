@@ -3,7 +3,7 @@
 
 namespace Core
 {
-    inline void RunEmulator(const std::string& ROMPath)
+    inline void RunEmulator(const std::string& ROMPath, Config& Settings)
     {
         Emulator::CPU CPU;
         if (ROMPath.size())
@@ -31,20 +31,20 @@ namespace Core
                     EmulatorWindow.close();
                     break;
                 case sf::Event::KeyPressed:
-                    CPU.HandleKeyEvent(event);
+                    CPU.HandleKeyEvent(event, Settings);
                     break;
                 case sf::Event::KeyReleased:
-                    CPU.HandleKeyEvent(event);
+                    CPU.HandleKeyEvent(event, Settings);
                     break;
                 }
             }
-            EmulatorWindow.setFramerateLimit(Config::RefreshRate);
+            EmulatorWindow.setFramerateLimit(Settings.RefreshRate);
             
-            sf::Time DeltaTime = Clock.restart();
+            const sf::Time DeltaTime = Clock.restart();
             TotalTime += DeltaTime.asSeconds();
             
             ImGui::SFML::Update(EmulatorWindow, DeltaTime);
-            Renderer::RenderUI(CPU);
+            Renderer::RenderUI(CPU, Settings);
             
             while (TotalTime >= TimeIncrement)
             {
@@ -52,13 +52,13 @@ namespace Core
                 TotalTime -= TimeIncrement;
             }
 
-            for (std::int32_t i = 0; i < Config::CyclesPerFrame && CPU.LoadedROM; i++)
+            for (std::int32_t i = 0; i < Settings.CyclesPerFrame && CPU.LoadedROM; i++)
             {
                 CPU.Cycle();
             }
 
             EmulatorWindow.clear();
-            Renderer::RenderVideoBuffer(EmulatorWindow, CPU);
+            Renderer::RenderVideoBuffer(EmulatorWindow, CPU, Settings);
             ImGui::SFML::Render(EmulatorWindow);
             EmulatorWindow.display();
         }
@@ -72,6 +72,7 @@ namespace Core
         {
             std::filesystem::create_directory("roms");
         }
-        Core::RunEmulator(ROMPath);
+        Config CurrentSettings;
+        Core::RunEmulator(ROMPath, CurrentSettings);
     }
 }

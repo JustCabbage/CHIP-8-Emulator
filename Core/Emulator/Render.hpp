@@ -4,11 +4,11 @@
 #include <imgui.h>
 #include "Configuration.hpp"
 #include "CPU/CPU.hpp"
-#include "MemoryViewer.hpp"
+#include <MemoryViewer.hpp>
 
 namespace Core::Renderer
 {
-    inline void RenderVideoBuffer(sf::RenderTarget& Target, Emulator::CPU& CPU)
+    inline void RenderVideoBuffer(sf::RenderTarget& Target, const Emulator::CPU& CPU, const Config& Settings)
     {
         for (std::size_t i = 0; i < CPU.VideoBuffer.size(); i++)
         {
@@ -19,14 +19,14 @@ namespace Core::Renderer
                     sf::RectangleShape Pixel;
                     Pixel.setPosition({static_cast<float>(i * 10), static_cast<float>(j * 10)});
                     Pixel.setSize({10, 10});
-                    Pixel.setFillColor(sf::Color(static_cast<std::uint8_t>(Config::Color[0] * 255), static_cast<std::uint8_t>(Config::Color[1] * 255), static_cast<std::uint8_t>(Config::Color[2] * 255)));
+                    Pixel.setFillColor(sf::Color(static_cast<std::uint8_t>(Settings.Color[0] * 255), static_cast<std::uint8_t>(Settings.Color[1] * 255), static_cast<std::uint8_t>(Settings.Color[2] * 255)));
                     Target.draw(Pixel);
                 }
             }
         }
     }
 
-    inline void RenderUI(Emulator::CPU& CPU)
+    inline void RenderUI(Emulator::CPU& CPU, Config& Settings)
     {
         ImGui::StyleColorsDark();
         ImGui::SetNextWindowSize({1280 - 640, 640});
@@ -94,9 +94,9 @@ namespace Core::Renderer
             {
                 if (ImGui::BeginTabItem("Settings"))
                 {
-                    ImGui::SliderInt("Cycles Per Frame", &Config::CyclesPerFrame, 0, 1000);
-                    ImGui::SliderInt("Refresh Rate", &Config::RefreshRate, 1, 1000);
-                    ImGui::ColorEdit3("Color", Config::Color.data());
+                    ImGui::SliderInt("Cycles Per Frame", &Settings.CyclesPerFrame, 0, 1000);
+                    ImGui::SliderInt("Refresh Rate", &Settings.RefreshRate, 1, 1000);
+                    ImGui::ColorEdit3("Color", Settings.Color.data());
                     if (ImGui::Button("Reset"))
                     {
                         CPU.Reset();

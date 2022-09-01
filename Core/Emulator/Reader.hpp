@@ -9,7 +9,7 @@ namespace Core::Emulator
     {
     public:
         Reader() {}
-        Reader(const std::string& StreamPath)
+        explicit Reader(const std::string& StreamPath)
         {
             this->SetStream(StreamPath);
         }

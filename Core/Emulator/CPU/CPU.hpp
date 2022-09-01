@@ -4,6 +4,8 @@
 #include <string>
 #include <iostream>
 #include <SFML/Graphics.hpp>
+#include "../Configuration.hpp"
+
 
 namespace Core::Emulator
 {
@@ -13,7 +15,7 @@ namespace Core::Emulator
         CPU() {}
         void LoadROM(const std::string& ROMPath);
         void Reset();
-        void HandleKeyEvent(sf::Event& Event);
+        void HandleKeyEvent(sf::Event& Event, Config& Settings);
         void CycleTimers();
         void Cycle();
     public:

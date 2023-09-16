@@ -47,35 +47,35 @@ namespace Core::Emulator
             }
             case 0x0004:
             {
-                const std::uint8_t Carry = (CPU->Registers[Instruction.x] + CPU->Registers[Instruction.y]) > 0xFF ? 1 : 0;
+                const uint8_t Carry = (CPU->Registers[Instruction.x] + CPU->Registers[Instruction.y]) > 0xFF ? 1 : 0;
                 CPU->Registers[Instruction.x] += CPU->Registers[Instruction.y];
                 CPU->Registers[0xF] = Carry;
                 break;
             }
             case 0x0005:
             {
-                const std::uint8_t Borrow = (CPU->Registers[Instruction.x] >= CPU->Registers[Instruction.y]);
+                const uint8_t Borrow = (CPU->Registers[Instruction.x] >= CPU->Registers[Instruction.y]);
                 CPU->Registers[Instruction.x] = CPU->Registers[Instruction.x] - CPU->Registers[Instruction.y];
                 CPU->Registers[0xF] = Borrow;
                 break;
             }
             case 0x0006:
             {
-                const std::uint8_t Flag = (CPU->Registers[Instruction.x] & 1) > 0;
+                const uint8_t Flag = (CPU->Registers[Instruction.x] & 1) > 0;
                 CPU->Registers[Instruction.x] = CPU->Registers[Instruction.y] >> 1;
                 CPU->Registers[0xF] = Flag;
                 break;
             }
             case 0x0007:
             {
-                const std::uint8_t Borrow = CPU->Registers[Instruction.y] > CPU->Registers[Instruction.x] ? 1 : 0;
+                const uint8_t Borrow = CPU->Registers[Instruction.y] > CPU->Registers[Instruction.x] ? 1 : 0;
                 CPU->Registers[Instruction.x] = CPU->Registers[Instruction.y] - CPU->Registers[Instruction.x];
                 CPU->Registers[0xF] = Borrow;
                 break;
             }
             case 0x000E:
             {
-                const std::uint8_t Flag = ((CPU->Registers[Instruction.x] & 0x80) > 0);
+                const uint8_t Flag = ((CPU->Registers[Instruction.x] & 0x80) > 0);
                 CPU->Registers[Instruction.x] = CPU->Registers[Instruction.y] << 1;
                 CPU->Registers[0xF] = Flag;
                 break;
@@ -119,7 +119,7 @@ namespace Core::Emulator
             }
             case 0x000A:
             {
-                for (std::uint8_t i = 0; i < CPU->Keypad.size(); i++)
+                for (uint8_t i = 0; i < CPU->Keypad.size(); i++)
                 {
                     if (CPU->Keypad[i])
                     {
@@ -157,7 +157,7 @@ namespace Core::Emulator
             }
             case 0x0033:
             {
-                std::uint8_t Value = CPU->Registers[Instruction.x];
+                uint8_t Value = CPU->Registers[Instruction.x];
                 CPU->Memory[CPU->I + 2] = Value % 10;
                 Value /= 10;
                 CPU->Memory[CPU->I + 1] = Value % 10;
@@ -166,7 +166,7 @@ namespace Core::Emulator
             }
             case 0x0055:
             {
-                for (std::uint8_t i = 0; i <= Instruction.x; i++)
+                for (uint8_t i = 0; i <= Instruction.x; i++)
                 {
                     CPU->Memory[CPU->I + i] = CPU->Registers[i];
                 }
@@ -175,7 +175,7 @@ namespace Core::Emulator
             }
             case 0x0065:
             {
-                for (std::uint8_t i = 0; i <= Instruction.x; i++)
+                for (uint8_t i = 0; i <= Instruction.x; i++)
                 {
                     CPU->Registers[i] = CPU->Memory[CPU->I + i];
                 }

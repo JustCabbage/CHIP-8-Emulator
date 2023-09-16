@@ -36,6 +36,8 @@ namespace Core
                 case sf::Event::KeyReleased:
                     CPU.HandleKeyEvent(event, Settings);
                     break;
+                default:
+                    break;
                 }
             }
             EmulatorWindow.setFramerateLimit(Settings.RefreshRate);
@@ -52,7 +54,7 @@ namespace Core
                 TotalTime -= TimeIncrement;
             }
 
-            for (std::int32_t i = 0; i < Settings.CyclesPerFrame && CPU.LoadedROM; i++)
+            for (int32_t i = 0; i < Settings.CyclesPerFrame && CPU.LoadedROM; i++)
             {
                 CPU.Cycle();
             }

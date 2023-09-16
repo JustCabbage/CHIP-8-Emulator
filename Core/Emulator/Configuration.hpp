@@ -7,10 +7,10 @@ namespace Core
 {
     struct Config
     {
-        std::int32_t CyclesPerFrame = 10;
-        std::int32_t RefreshRate = 60;
+        int32_t CyclesPerFrame = 10;
+        int32_t RefreshRate = 60;
         std::array<float, 3> Color = {1.f, 1.f, 1.f};
-        std::map<sf::Keyboard::Key, std::uint8_t> Bindings =
+        std::map<sf::Keyboard::Key, uint8_t> Bindings =
         {
             {sf::Keyboard::Num1, 0x1},
             {sf::Keyboard::Num2, 0x2},

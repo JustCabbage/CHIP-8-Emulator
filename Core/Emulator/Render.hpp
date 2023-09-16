@@ -1,5 +1,6 @@
 #pragma once
 #include <filesystem>
+#include <cstdint>
 #include <imgui-SFML.h>
 #include <imgui.h>
 #include "Configuration.hpp"
@@ -10,16 +11,16 @@ namespace Core::Renderer
 {
     inline void RenderVideoBuffer(sf::RenderTarget& Target, const Emulator::CPU& CPU, const Config& Settings)
     {
-        for (std::size_t i = 0; i < CPU.VideoBuffer.size(); i++)
+        for (size_t i = 0; i < CPU.VideoBuffer.size(); i++)
         {
-            for (std::size_t j = 0; j < CPU.VideoBuffer[i].size(); j++)
+            for (size_t j = 0; j < CPU.VideoBuffer[i].size(); j++)
             {
                 if (CPU.VideoBuffer[i][j])
                 {
                     sf::RectangleShape Pixel;
                     Pixel.setPosition({static_cast<float>(i * 10), static_cast<float>(j * 10)});
                     Pixel.setSize({10, 10});
-                    Pixel.setFillColor(sf::Color(static_cast<std::uint8_t>(Settings.Color[0] * 255), static_cast<std::uint8_t>(Settings.Color[1] * 255), static_cast<std::uint8_t>(Settings.Color[2] * 255)));
+                    Pixel.setFillColor(sf::Color(static_cast<uint8_t>(Settings.Color[0] * 255), static_cast<uint8_t>(Settings.Color[1] * 255), static_cast<uint8_t>(Settings.Color[2] * 255)));
                     Target.draw(Pixel);
                 }
             }

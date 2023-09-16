@@ -12,7 +12,7 @@ namespace Core::Emulator
         // y - A 4-bit value, the upper 4 bits of the low byte of the instruction
         // kk - An 8-bit value, the lowest 8 bits of the instruct
 
-        explicit Instruction(std::uint16_t OpCode)
+        explicit Instruction(uint16_t OpCode)
         {
             this->Type = OpCode & 0xF000;
             this->nnn = OpCode & 0x0FFF;
@@ -22,11 +22,11 @@ namespace Core::Emulator
             this->kk = OpCode & 0x00FF;
         }
 
-        std::uint16_t Type;
-        std::uint8_t n;
-        std::uint8_t x, y;
-        std::uint8_t kk;
-        std::uint16_t nnn;
+        uint16_t Type;
+        uint8_t n;
+        uint8_t x, y;
+        uint8_t kk;
+        uint16_t nnn;
     };
 
     namespace Instructions

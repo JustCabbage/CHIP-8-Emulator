@@ -30,9 +30,9 @@ namespace Core::Emulator
             return this->m_CurrentStream.tellg();
         }
 
-        std::vector<std::uint8_t> ReadBytes(std::int64_t Count)
+        std::vector<uint8_t> ReadBytes(std::int64_t Count)
         {
-            std::vector<std::uint8_t> Bytes(Count);
+            std::vector<uint8_t> Bytes(Count);
             this->m_CurrentStream.read(reinterpret_cast<char*>(Bytes.data()), Count);
             return Bytes;
         }

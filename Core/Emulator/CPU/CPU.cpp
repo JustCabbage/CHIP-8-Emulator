@@ -17,8 +17,8 @@ namespace Core::Emulator
         this->Size = ROMReader.Seek(0, std::ios::end);
         ROMReader.Seek(0, std::ios::beg);
 
-        const std::vector<std::uint8_t> Bytes = ROMReader.ReadBytes(this->Size);
-        for (std::uint32_t i = 0; i < this->Size; i++)
+        const std::vector<uint8_t> Bytes = ROMReader.ReadBytes(this->Size);
+        for (uint32_t i = 0; i < this->Size; i++)
         {
             this->Memory[i + 0x200] = Bytes[i];
         }
@@ -165,20 +165,20 @@ namespace Core::Emulator
             }
             case 0xD000:
             {
-                const std::uint16_t X = this->Registers[CurrentInstruction.x] % 64;
-                const std::uint16_t Y = this->Registers[CurrentInstruction.y] % 32;
-                const std::uint16_t Height = CurrentInstruction.n;
+                const uint16_t X = this->Registers[CurrentInstruction.x] % 64;
+                const uint16_t Y = this->Registers[CurrentInstruction.y] % 32;
+                const uint16_t Height = CurrentInstruction.n;
                 
                 this->Registers[0xF] = 0;
-                for (std::uint16_t i = 0; i < Height; i++)
+                for (uint16_t i = 0; i < Height; i++)
                 {
-                    const std::uint8_t Pixel = this->Memory[I + i];
-                    for (std::uint8_t j = 0; j < 8; j++)
+                    const uint8_t Pixel = this->Memory[I + i];
+                    for (uint8_t j = 0; j < 8; j++)
                     {
                         if (Pixel & (0x80 >> j))
                         {
-                            const std::uint8_t FinalX = (X + j) % 64;
-                            const std::uint8_t FinalY = (Y + i) % 32;
+                            const uint8_t FinalX = (X + j) % 64;
+                            const uint8_t FinalY = (Y + i) % 32;
                             if (this->VideoBuffer[FinalX][FinalY])
                             {
                                 this->Registers[0xF] = 1;

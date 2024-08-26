@@ -5,6 +5,16 @@ This is a relatively finished implementation of the [CHIP-8](https://en.wikipedi
 
 **This emulator currently does not have any sound output at the moment. This feature will be added at some point in the future.**
 
+## Building
+
+To build this project you must have [CMake](https://cmake.org/) installed. This project should also clone all relevant dependencies for you.
+
+```bash
+git clone https://github.com/JustCabbage/CHIP-8-Emulator --recursive
+cd CHIP-8-Emulator && mkdir build && cd build
+cmake .. && cmake --build .
+```
+
 ## Controls
 ```
 CHIP-8                  Keyboard
